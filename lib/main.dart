@@ -4,6 +4,7 @@ import 'package:paris_coba/pages/sign_in_page.dart';
 import 'package:paris_coba/pages/sign_up_page.dart';
 import 'package:paris_coba/pages/splah_page.dart';
 import 'package:paris_coba/providers/auth_provider.dart';
+import 'package:paris_coba/providers/payslip_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -17,7 +18,13 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => AuthProvider(),
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PayslipProvider(),
+        ),
+        // ChangeNotifierProvider(
+        //   create: (context) => DetailProvider(),
+        // )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

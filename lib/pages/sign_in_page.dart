@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:paris_coba/models/user_model.dart';
 import 'package:paris_coba/pages/home/main_page.dart';
 import 'package:paris_coba/providers/auth_provider.dart';
 import 'package:paris_coba/theme.dart';
 import 'package:paris_coba/widgets/loading_button.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -16,10 +18,13 @@ class _SignInPageState extends State<SignInPage> {
   TextEditingController passwordController = TextEditingController(text: '');
 
   bool isLoading = false;
+  bool isObscure = true;
 
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    UserModel user = authProvider.user;
+
     handleSignIn() async {
       setState(() {
         isLoading = true;
@@ -37,7 +42,6 @@ class _SignInPageState extends State<SignInPage> {
           backgroundColor: alertColor,
         ));
       }
-
       setState(() {
         isLoading = false;
       });
@@ -45,22 +49,36 @@ class _SignInPageState extends State<SignInPage> {
 
     Widget header() {
       return Container(
-        margin: EdgeInsets.fromLTRB(130, 30, 0, 0),
+        margin: EdgeInsets.fromLTRB(80, 30, 0, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              "Sign In",
-              style: primaryBlackTextStyle.copyWith(
-                  fontSize: 24, fontWeight: semiBold),
-            ),
-            SizedBox(
-              height: 2,
-            ),
             // Text(
-            //   'Sign In to Continue',
-            //   style: subtitleTextStyle,
-            // )
+            //   "Welcome to UP",
+            //   style: grey2TextStyle.copyWith(fontSize: 18, fontWeight: medium),
+            // ),
+            RichText(
+                text: TextSpan(
+                    style: grey2TextStyle.copyWith(
+                        fontSize: 18, fontWeight: medium),
+                    children: [
+                  TextSpan(text: 'Welcome to UP '),
+                  WidgetSpan(
+                      child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 1.0),
+                    child: Icon(
+                      Icons.arrow_circle_up_rounded,
+                      color: Color(0xffD8EAF8),
+                    ),
+                  ))
+                ])),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Please login to your account.',
+              style: grey2TextStyle.copyWith(fontSize: 12, fontWeight: light),
+            )
           ],
         ),
       );
@@ -72,7 +90,7 @@ class _SignInPageState extends State<SignInPage> {
         margin: EdgeInsets.only(top: 40),
         alignment: Alignment.center,
         child: Image(
-          image: AssetImage('assets/P.png'),
+          image: AssetImage('assets/UP Logo.png'),
           height: 130,
           width: 130,
         ),
@@ -87,15 +105,16 @@ class _SignInPageState extends State<SignInPage> {
           children: [
             Text(
               'NIP',
-              style: primaryBlackTextStyle.copyWith(
-                  fontSize: 16, fontWeight: medium),
+              style: greyTextStyle.copyWith(fontSize: 15, fontWeight: light),
             ),
             SizedBox(height: 12),
             Container(
               height: 50,
               padding: EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                  color: bgColorParis, borderRadius: BorderRadius.circular(12)),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: borderColor)),
               child: Center(
                 child: Row(
                   children: [
@@ -109,9 +128,9 @@ class _SignInPageState extends State<SignInPage> {
                     Expanded(
                         child: TextFormField(
                       controller: nipController,
-                      style: primaryBlackTextStyle,
+                      style: greyTextStyle,
                       decoration: InputDecoration.collapsed(
-                        hintText: 'Masukkan NIP',
+                        hintText: '',
                         hintStyle: secondaryTextStyle,
                       ),
                     ))
@@ -132,15 +151,16 @@ class _SignInPageState extends State<SignInPage> {
           children: [
             Text(
               'Password',
-              style: primaryBlackTextStyle.copyWith(
-                  fontSize: 16, fontWeight: medium),
+              style: greyTextStyle.copyWith(fontSize: 16, fontWeight: medium),
             ),
             SizedBox(height: 12),
             Container(
               height: 50,
               padding: EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                  color: bgColorParis, borderRadius: BorderRadius.circular(12)),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: borderColor)),
               child: Center(
                 child: Row(
                   children: [
@@ -154,10 +174,20 @@ class _SignInPageState extends State<SignInPage> {
                     Expanded(
                         child: TextFormField(
                       controller: passwordController,
-                      obscureText: true,
-                      style: primaryBlackTextStyle,
-                      decoration: InputDecoration.collapsed(
-                        hintText: 'Password',
+                      obscureText: isObscure,
+                      style: greyTextStyle,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isObscure = !isObscure;
+                              });
+                            },
+                            icon: Icon(isObscure
+                                ? Icons.visibility
+                                : Icons.visibility_off)),
+                        hintText: '',
                         hintStyle: secondaryTextStyle,
                       ),
                     ))
@@ -180,11 +210,11 @@ class _SignInPageState extends State<SignInPage> {
             style: TextButton.styleFrom(
                 backgroundColor: secondaryColor,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5))),
+                    borderRadius: BorderRadius.circular(4))),
             child: Text(
-              'Sign In',
-              style:
-                  primaryTextStyle.copyWith(fontSize: 16, fontWeight: medium),
+              'Log In',
+              style: textWhiteTextStyle.copyWith(
+                  fontSize: 14, fontWeight: regular),
             )),
       );
     }
@@ -196,19 +226,19 @@ class _SignInPageState extends State<SignInPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Don\'t have an account? ',
-                style: secondaryTextStyle.copyWith(fontSize: 12),
+                '2022 © Unleashed Potential',
+                style: greyTextStyle.copyWith(fontSize: 12, fontWeight: light),
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/sign-up');
-                },
-                child: Text(
-                  'Sign Up',
-                  style: primaryBlackTextStyle.copyWith(
-                      fontSize: 12, fontWeight: medium),
-                ),
-              ),
+              // GestureDetector(
+              //   onTap: () {
+              //     Navigator.pushNamed(context, '/sign-up');
+              //   },
+              //   child: Text(
+              //     'Sign Up',
+              //     style:
+              //         greyTextStyle.copyWith(fontSize: 12, fontWeight: medium),
+              //   ),
+              // ),
             ],
           ));
     }

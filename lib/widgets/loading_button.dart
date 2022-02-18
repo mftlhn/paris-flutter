@@ -16,7 +16,7 @@ class LoadingButton extends StatelessWidget {
             Container(
               child: CircularProgressIndicator(
                 strokeWidth: 3,
-                valueColor: AlwaysStoppedAnimation(primaryTextColor),
+                valueColor: AlwaysStoppedAnimation(textWhiteColor),
               ),
               width: 16,
               height: 16,
@@ -27,14 +27,14 @@ class LoadingButton extends StatelessWidget {
             Text(
               'Loading',
               style:
-                  primaryTextStyle.copyWith(fontSize: 16, fontWeight: medium),
+                  textWhiteTextStyle.copyWith(fontSize: 14, fontWeight: light),
             ),
           ],
         ),
         style: TextButton.styleFrom(
             backgroundColor: secondaryColor,
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
       ),
     );
   }

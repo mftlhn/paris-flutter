@@ -46,8 +46,8 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             Text(
               "Sign Up",
-              style: primaryBlackTextStyle.copyWith(
-                  fontSize: 24, fontWeight: semiBold),
+              style:
+                  primaryTextStyle.copyWith(fontSize: 24, fontWeight: semiBold),
             ),
             SizedBox(
               height: 2,
@@ -82,15 +82,15 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             Text(
               'NIP',
-              style: primaryBlackTextStyle.copyWith(
-                  fontSize: 16, fontWeight: medium),
+              style:
+                  primaryTextStyle.copyWith(fontSize: 16, fontWeight: medium),
             ),
             SizedBox(height: 12),
             Container(
               height: 50,
               padding: EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                  color: bgColorParis, borderRadius: BorderRadius.circular(12)),
+                  color: Colors.white, borderRadius: BorderRadius.circular(12)),
               child: Center(
                 child: Row(
                   children: [
@@ -104,7 +104,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     Expanded(
                         child: TextFormField(
                       controller: nipController,
-                      style: primaryBlackTextStyle,
+                      style: primaryTextStyle,
                       decoration: InputDecoration.collapsed(
                         hintText: 'Masukkan NIP',
                         hintStyle: secondaryTextStyle,
@@ -127,15 +127,15 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             Text(
               'Password',
-              style: primaryBlackTextStyle.copyWith(
-                  fontSize: 16, fontWeight: medium),
+              style:
+                  primaryTextStyle.copyWith(fontSize: 16, fontWeight: medium),
             ),
             SizedBox(height: 12),
             Container(
               height: 50,
               padding: EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                  color: bgColorParis, borderRadius: BorderRadius.circular(12)),
+                  color: primaryColor, borderRadius: BorderRadius.circular(12)),
               child: Center(
                 child: Row(
                   children: [
@@ -150,7 +150,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: TextFormField(
                       controller: passwordController,
                       obscureText: true,
-                      style: primaryBlackTextStyle,
+                      style: primaryTextStyle,
                       decoration: InputDecoration.collapsed(
                         hintText: 'Password',
                         hintStyle: secondaryTextStyle,
@@ -200,7 +200,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
                 child: Text(
                   'Sign In',
-                  style: primaryBlackTextStyle.copyWith(
+                  style: primaryTextStyle.copyWith(
                       fontSize: 12, fontWeight: medium),
                 ),
               ),

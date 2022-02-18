@@ -1,9 +1,21 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:paris_coba/models/user_model.dart';
 import 'package:paris_coba/pages/home/home_page.dart';
-import 'package:paris_coba/pages/home/profile_page.dart';
+import 'package:paris_coba/pages/home/home_page2.dart';
+import 'package:paris_coba/pages/home/notification_page.dart';
+import 'package:paris_coba/pages/profile/profile_page.dart';
+import 'package:paris_coba/pages/profile/profile_page2.dart';
+import 'package:paris_coba/pages/home/setting_page.dart';
+import 'package:paris_coba/pages/sign_in_page.dart';
+import 'package:paris_coba/providers/auth_provider.dart';
+import 'package:paris_coba/providers/payslip_provider.dart';
 import 'package:paris_coba/services/auth_service.dart';
 import 'package:paris_coba/theme.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
@@ -14,16 +26,45 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int currentIndex = 0;
   AuthService auth = new AuthService();
+  UserModel user = new UserModel();
+
+  String token = '';
+
+  @override
+  void initState() {
+    getToken();
+    getInit();
+    super.initState();
+  }
+
+  getInit() async {
+    await Provider.of<AuthProvider>(context, listen: false).getData();
+    await Provider.of<PayslipProvider>(context, listen: false).getPayslip();
+  }
+
+  void getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      token = prefs.getString('token');
+    });
+  }
 
   handleLogout() async {
-    setState(() {});
-    await auth.logout();
-    await Navigator.pushNamedAndRemoveUntil(
-        context, '/sign-in', (route) => false);
+    auth.logout();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.clear();
+    });
+    await Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => SignInPage()));
   }
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    UserModel user = authProvider.user;
+
     Widget homeButton() {
       return FloatingActionButton(
         onPressed: () {},
@@ -37,13 +78,10 @@ class _MainPageState extends State<MainPage> {
 
     Widget customButtonNav() {
       return ClipRRect(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
         child: BottomAppBar(
-          shape: CircularNotchedRectangle(),
-          notchMargin: 10,
           clipBehavior: Clip.antiAlias,
           child: BottomNavigationBar(
-              backgroundColor: bgColor2Paris,
+              backgroundColor: Colors.white,
               currentIndex: currentIndex,
               onTap: (value) {
                 print(value);
@@ -56,9 +94,9 @@ class _MainPageState extends State<MainPage> {
                 BottomNavigationBarItem(
                     icon: Container(
                       // margin: EdgeInsets.only(top: 20),
-                      padding: EdgeInsets.only(top: 15),
+                      padding: EdgeInsets.only(top: 5),
                       child: Icon(Icons.home,
-                          size: 30,
+                          size: 27,
                           color: currentIndex == 0
                               ? secondaryColor
                               : Color(0xff808191)),
@@ -66,15 +104,37 @@ class _MainPageState extends State<MainPage> {
                     label: ''),
                 BottomNavigationBarItem(
                     icon: Container(
-                      padding: EdgeInsets.only(top: 15),
+                      padding: EdgeInsets.only(top: 5),
                       // margin: EdgeInsets.only(top: 20),
-                      child: Icon(Icons.account_circle,
-                          size: 30,
+                      child: Icon(Icons.person,
+                          size: 27,
                           color: currentIndex == 1
                               ? secondaryColor
                               : Color(0xff808191)),
                     ),
-                    label: '')
+                    label: ''),
+                BottomNavigationBarItem(
+                    icon: Container(
+                      padding: EdgeInsets.only(top: 5),
+                      // margin: EdgeInsets.only(top: 20),
+                      child: Icon(Icons.notifications_rounded,
+                          size: 27,
+                          color: currentIndex == 2
+                              ? secondaryColor
+                              : Color(0xff808191)),
+                    ),
+                    label: ''),
+                BottomNavigationBarItem(
+                    icon: Container(
+                      padding: EdgeInsets.only(top: 5),
+                      // margin: EdgeInsets.only(top: 20),
+                      child: Icon(Icons.settings,
+                          size: 27,
+                          color: currentIndex == 3
+                              ? secondaryColor
+                              : Color(0xff808191)),
+                    ),
+                    label: ''),
               ]),
         ),
       );
@@ -86,7 +146,13 @@ class _MainPageState extends State<MainPage> {
           return HomePage();
           break;
         case 1:
+          return ProfilePage2();
+          break;
+        case 2:
           return ProfilePage();
+          break;
+        case 3:
+          return SettingPage();
           break;
         default:
           return HomePage();
@@ -96,10 +162,14 @@ class _MainPageState extends State<MainPage> {
     Widget appBar() {
       return AppBar(
         title: Text('Menu Home', style: primaryTextStyle),
-        backgroundColor: primaryColor,
+        backgroundColor: secondaryColor,
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(onPressed: () => handleLogout(), icon: Icon(Icons.logout))
+          IconButton(
+              onPressed: () {
+                handleLogout();
+              },
+              icon: Icon(Icons.logout))
         ],
       );
     }
@@ -111,12 +181,6 @@ class _MainPageState extends State<MainPage> {
         final isExitWarning = difference >= Duration(seconds: 2);
         timeBackPressed = DateTime.now();
         if (isExitWarning) {
-          //show snackbar
-          // final snack = SnackBar(
-          //   content: Text('Press Back button again to Exit'),
-          //   duration: Duration(seconds: 2),
-          // );
-          // ScaffoldMessenger.of(context).showSnackBar(snack);
           final message = 'Press back again to exit';
           Fluttertoast.showToast(msg: message, fontSize: 18);
           return false; // false will do nothing when back press
@@ -126,11 +190,9 @@ class _MainPageState extends State<MainPage> {
         }
       },
       child: Scaffold(
-        backgroundColor: bgColorParis,
-        floatingActionButton: homeButton(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        backgroundColor: greyColor,
+        resizeToAvoidBottomInset: false,
         bottomNavigationBar: customButtonNav(),
-        appBar: appBar(),
         body: body(),
       ),
     );
